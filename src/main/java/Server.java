@@ -1,9 +1,5 @@
-package org.example;
-
 import java.io.*;
 import java.net.*;
-import java.util.ArrayList;
-import java.util.List;
 
 
 public class Server {
@@ -21,7 +17,7 @@ public class Server {
                 out1.println("Oczekiwanie na drugiego gracza");
 
                 Socket socket2 = serverSocket.accept();
-                OutputStream output2 = socket1.getOutputStream();
+                OutputStream output2 = socket2.getOutputStream();
                 PrintWriter out2 = new PrintWriter(output2, true);
 
                 System.out.println("Gracz 2 dolaczyl");
