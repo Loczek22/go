@@ -25,7 +25,7 @@ public class Client {
             }
 
 
-            do {
+            //do {
                 //TODO: logika dla gracza
 
                 // Wysylanie do serwera
@@ -33,7 +33,7 @@ public class Client {
                 // Odbieranie z serwera
                 //in.readLine();
 
-            } while (!"Game over".equals(messageFromServer));
+            //} while (!"Game over".equals(messageFromServer));
             socket.close();
 
         } catch (UnknownHostException ex) {
