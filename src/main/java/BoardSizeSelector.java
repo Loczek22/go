@@ -2,6 +2,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.geometry.Pos;
 
 public class BoardSizeSelector {
 
@@ -13,12 +14,12 @@ public class BoardSizeSelector {
 
     public void initSizeSelectionScreen() {
         VBox root = new VBox(10);
-        Button size19Button = new Button("19x19");
+        Button size19Button = new Button("9x9");
         Button size13Button = new Button("13x13");
-        Button size9Button = new Button("9x9");
+        Button size9Button = new Button("19x19");
 
         size19Button.setOnAction(e -> {
-            showGameBoard(19);
+            showGameBoard(9);
         });
 
         size13Button.setOnAction(e -> {
@@ -26,11 +27,11 @@ public class BoardSizeSelector {
         });
 
         size9Button.setOnAction(e -> {
-            showGameBoard(9);
+            showGameBoard(19);
         });
 
         root.getChildren().addAll(size19Button, size13Button, size9Button);
-        root.setAlignment(javafx.geometry.Pos.CENTER);
+        root.setAlignment(Pos.CENTER);
 
         Scene scene = new Scene(root, 300, 200);
         primaryStage.setScene(scene);

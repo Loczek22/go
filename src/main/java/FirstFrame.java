@@ -24,7 +24,9 @@ public class FirstFrame extends Application {
             playerOptions.showPlayerOptions();
         });
 
-        // TODO: obsługa przycisku "LOAD GAME" (bazy danych)
+        loadGameButton.setOnAction(e -> {
+            // TODO: obsługa przycisku "LOAD GAME" (bazy danych)
+        });
 
         root.getChildren().addAll(newGameButton, loadGameButton);
         root.setAlignment(Pos.CENTER);
