@@ -1,3 +1,6 @@
+package GUI;
+
+import Server.Client;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -20,6 +23,12 @@ public class FirstFrame extends Application {
         Button loadGameButton = new Button("LOAD GAME");
 
         newGameButton.setOnAction(e -> {
+            // uruchamianie klienta w osobnym wątku
+            Thread clientThread = new Thread(() -> {
+                Client client = new Client();
+                client.startClient();
+            });
+            clientThread.start();
             PlayerOptions playerOptions = new PlayerOptions(primaryStage);
             playerOptions.showPlayerOptions();
         });

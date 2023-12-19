@@ -1,3 +1,5 @@
+package Server;
+
 import java.io.*;
 import java.net.*;
 
@@ -13,14 +15,20 @@ public class Server {
                 InputStream input = socket.getInputStream();
                 BufferedReader in = new BufferedReader(new InputStreamReader(input));
 
-                int boardSize = Integer.parseInt(in.readLine());
+                // czekanie aż klient wybierze rozmiar planszy
+                String boardInput = in.readLine();
+                while (boardInput == null) {
+                    boardInput = in.readLine();
+                }
+
+                int boardSize = Integer.parseInt(boardInput);
 
                 System.out.println("Dolaczyl nowy gracz " + boardSize);
                 playerToGameAdapter.addNewPlayer(socket, boardSize);
             }
 
         } catch (IOException ex) {
-            System.out.println("Server exception: " + ex.getMessage());
+            System.out.println("Server.Server exception: " + ex.getMessage());
             ex.printStackTrace();
         }
     }

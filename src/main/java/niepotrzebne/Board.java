@@ -1,6 +1,8 @@
+package niepotrzebne;
+
 public class Board {
     private int boardSize; //19, 13, 9
-    private SingleStone [][] stones;
+    private SingleStone[][] stones;
 
     public Board(int boardSize) {
         this.boardSize = boardSize;

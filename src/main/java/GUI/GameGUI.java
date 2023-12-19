@@ -1,3 +1,6 @@
+package GUI;
+
+import GUI.BoardGUI;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -20,6 +23,7 @@ public class GameGUI {
     }
 
     Label playerMoveLabel = new Label("YOUR TURN");
+
     public void initGame() {
         Stage gameStage = new Stage();
         boardGUI = new BoardGUI(boardSize, 600 / boardSize);
@@ -40,7 +44,7 @@ public class GameGUI {
             if (x >= 0 && x < boardSize && y >= 0 && y < boardSize) {
                 boardGUI.placeStone(x, y);
             }
-            draw(canvas, boardGUI);
+            drawS(canvas, boardGUI);
         });
 
         confirmMoveButton.setOnAction(e -> {
@@ -66,7 +70,7 @@ public class GameGUI {
         // margines
         HBox.setMargin(buttonLabelBox, new Insets(50, 50, 0, 0 ));
 
-        draw(canvas, boardGUI);
+        drawB(canvas, boardGUI);
 
         Scene scene = new Scene(root);
         gameStage.setScene(scene);
@@ -76,9 +80,14 @@ public class GameGUI {
         playerMoveLabel.setText(text);
     }
 
-    public static void draw(Canvas canvas, BoardGUI boardGUI) {
+    public static void drawS(Canvas canvas, BoardGUI boardGUI) {
+        GraphicsContext gc = canvas.getGraphicsContext2D();
+        //boardGUI.drawBoard(gc);
+        boardGUI.drawStones(gc);
+    }
+
+    public static void drawB(Canvas canvas, BoardGUI boardGUI) {
         GraphicsContext gc = canvas.getGraphicsContext2D();
         boardGUI.drawBoard(gc);
-        boardGUI.drawStones(gc);
     }
 }

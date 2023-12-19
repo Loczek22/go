@@ -1,3 +1,5 @@
+package GUI;
+
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
@@ -7,6 +9,7 @@ import javafx.geometry.Pos;
 public class BoardSizeSelector {
 
     private final Stage primaryStage;
+    private static int selectedBoardSize;
 
     public BoardSizeSelector(Stage primaryStage) {
         this.primaryStage = primaryStage;
@@ -19,14 +22,17 @@ public class BoardSizeSelector {
         Button size9Button = new Button("19x19");
 
         size19Button.setOnAction(e -> {
+            selectedBoardSize = 9;
             showGameBoard(9);
         });
 
         size13Button.setOnAction(e -> {
+            selectedBoardSize = 13;
             showGameBoard(13);
         });
 
         size9Button.setOnAction(e -> {
+            selectedBoardSize = 19;
             showGameBoard(19);
         });
 
@@ -41,5 +47,9 @@ public class BoardSizeSelector {
         primaryStage.hide();
         GameGUI gameGUI = new GameGUI(boardSize);
         gameGUI.initGame();
+    }
+
+    public static int getSelectedBoardSize() {
+        return selectedBoardSize;
     }
 }

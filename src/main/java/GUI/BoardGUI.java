@@ -1,3 +1,5 @@
+package GUI;
+
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
@@ -32,6 +34,9 @@ public class BoardGUI {
             gc.strokeLine(xLine, 0, xLine, (board[0].length - 1) * cellSize + cellSize);
             gc.strokeLine(0, yLine, (board.length - 1) * cellSize + cellSize, yLine);
         }
+        gc.setStroke(Color.BLACK);
+        gc.setLineWidth(10);
+        gc.strokeRect(0, 0, board.length * cellSize, board.length * cellSize);
     }
 
     public void drawStones(GraphicsContext gc) {

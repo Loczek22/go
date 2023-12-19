@@ -1,3 +1,5 @@
+package Server;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
@@ -26,6 +28,7 @@ public class PlayerToGameAdapter {
                         new Game(socket9, socket).start();
                         socket9 = null;
                     }
+                    break;
                 case 13:
                     if(socket13 == null){
                         socket13 = socket;
@@ -36,6 +39,7 @@ public class PlayerToGameAdapter {
                         new Game(socket13, socket).start();
                         socket13 = null;
                     }
+                    break;
                 case 19:
                     if(socket19 == null){
                         socket19 = socket;
@@ -46,9 +50,10 @@ public class PlayerToGameAdapter {
                         sendMessageGameStarts(out, out19, 19);
                         socket19 = null;
                     }
+                    break;
             }
         }catch (IOException ex) {
-            System.out.println("Server exception: " + ex.getMessage());
+            System.out.println("Server.Server exception: " + ex.getMessage());
             ex.printStackTrace();
         }
 

@@ -1,10 +1,13 @@
+package Server;
+
+import GUI.BoardSizeSelector;
+
 import java.net.*;
 import java.io.*;
 
 
 public class Client {
-
-    public static void main(String[] args) {
+    public void startClient() {
 
         try  {
 
@@ -14,8 +17,12 @@ public class Client {
             // Odbieranie z serwera
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
-            // TODO: getBoardSize()
-            out.println(19);
+            // czekanie az klient wybierze rozmiar planszy
+            while (BoardSizeSelector.getSelectedBoardSize() == 0) {
+                Thread.sleep(100);
+            }
+
+            out.println(BoardSizeSelector.getSelectedBoardSize());
 
             // Pierwszy komunikat od serwera (czy znaleziono drugiego gracza)
             String first_message = in.readLine();
@@ -34,14 +41,16 @@ public class Client {
                 // Odbieranie z serwera
                 //in.readLine();
 
-            //} while ("Game over".equals(messageFromServer));
+            //} while ("Server.Game over".equals(messageFromServer));
             socket.close();
 
         } catch (UnknownHostException ex) {
-            System.out.println("Server not found: " + ex.getMessage());
+            System.out.println("Server.Server not found: " + ex.getMessage());
 
         } catch (IOException ex) {
             System.out.println("I/O error: " + ex.getMessage());
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
     }
 }

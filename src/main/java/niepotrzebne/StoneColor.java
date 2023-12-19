@@ -1,3 +1,5 @@
+package niepotrzebne;
+
 public enum StoneColor {
     BLACK('B'),
     WHITE('W');

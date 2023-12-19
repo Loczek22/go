@@ -1,3 +1,6 @@
+package GUI;
+
+import GUI.BoardSizeSelector;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
@@ -18,14 +21,13 @@ public class PlayerOptions {
         Button botButton = new Button("GAME WITH BOT");
 
         twoPlayersButton.setOnAction(e -> {
-            // TODO: obsługa klient-serwer
             BoardSizeSelector boardSizeSelector = new BoardSizeSelector(primaryStage);
             boardSizeSelector.initSizeSelectionScreen();
         });
 
         botButton.setOnAction(e -> {
             // TODO: implementacja gry z botem
-            //BoardSizeSelector boardSizeSelector = new BoardSizeSelector(primaryStage);
+            //GUI.BoardSizeSelector boardSizeSelector = new GUI.BoardSizeSelector(primaryStage);
             //boardSizeSelector.initSizeSelectionScreen();
         });
 

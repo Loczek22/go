@@ -1,3 +1,5 @@
+package niepotrzebne;
+
 public class SingleStone {
     private StoneColor color;
     private int x, y; // współrzędne kamienia na planszy

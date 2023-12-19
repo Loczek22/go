@@ -1,3 +1,5 @@
+package Server;
+
 import java.io.*;
 import java.net.*;
 
@@ -45,7 +47,7 @@ public class Game extends Thread {
             socket1.close();
             socket2.close();
         } catch (IOException ex) {
-            System.out.println("Server exception: " + ex.getMessage());
+            System.out.println("Server.Server exception: " + ex.getMessage());
             ex.printStackTrace();
         }
     }
