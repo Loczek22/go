@@ -5,26 +5,18 @@ import java.net.*;
 public class Server {
 
     public static void main(String[] args) {
-
+        PlayerToGameAdapter playerToGameAdapter = new PlayerToGameAdapter();
         try (ServerSocket serverSocket = new ServerSocket(4444)) {
 
             while (true) {
-                Socket socket1 = serverSocket.accept();
-                OutputStream output1 = socket1.getOutputStream();
-                PrintWriter out1 = new PrintWriter(output1, true);
+                Socket socket = serverSocket.accept();
+                InputStream input = socket.getInputStream();
+                BufferedReader in = new BufferedReader(new InputStreamReader(input));
 
-                System.out.println("Gracz 1 dolaczyl");
-                out1.println("Oczekiwanie na drugiego gracza");
+                int boardSize = Integer.parseInt(in.readLine());
 
-                Socket socket2 = serverSocket.accept();
-                OutputStream output2 = socket2.getOutputStream();
-                PrintWriter out2 = new PrintWriter(output2, true);
-
-                System.out.println("Gracz 2 dolaczyl");
-                out1.println("Rozpoczynanie gry");
-                out2.println("Rozpoczynanie gry");
-
-                new Game(socket1, socket2).start();
+                System.out.println("Dolaczyl nowy gracz " + boardSize);
+                playerToGameAdapter.addNewPlayer(socket, boardSize);
             }
 
         } catch (IOException ex) {
@@ -32,4 +24,5 @@ public class Server {
             ex.printStackTrace();
         }
     }
+
 }

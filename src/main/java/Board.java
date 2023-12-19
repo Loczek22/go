@@ -3,7 +3,7 @@ public class Board {
     private SingleStone [][] stones;
 
     public Board(int boardSize) {
-        boardSize = boardSize;
+        this.boardSize = boardSize;
         this.stones = new SingleStone[boardSize][boardSize];
         resetAll();
     }

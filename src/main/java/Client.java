@@ -14,6 +14,9 @@ public class Client {
             // Odbieranie z serwera
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
+            // TODO: getBoardSize()
+            out.println(19);
+
             // Pierwszy komunikat od serwera (czy znaleziono drugiego gracza)
             String first_message = in.readLine();
             System.out.println(first_message);
@@ -21,7 +24,7 @@ public class Client {
             if("Oczekiwanie na drugiego gracza".equals(first_message)) {
                 System.out.println(in.readLine());
             }
-
+            System.out.println(in.readLine());
 
             //do {
                 //TODO: logika dla gracza

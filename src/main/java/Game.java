@@ -30,7 +30,7 @@ public class Game extends Thread {
             OutputStream output2 = socket2.getOutputStream();
             PrintWriter out2 = new PrintWriter(output2, true);
 
-            String line;
+            sendMessageToPlayers("Rozpoczynanie gry", out1, out2);
             do {
 
                 //TODO: logika gry
