@@ -18,6 +18,7 @@ public class PlayerOptions {
         Button botButton = new Button("GAME WITH BOT");
 
         twoPlayersButton.setOnAction(e -> {
+            // TODO: obsługa klient-serwer
             BoardSizeSelector boardSizeSelector = new BoardSizeSelector(primaryStage);
             boardSizeSelector.initSizeSelectionScreen();
         });

@@ -5,10 +5,12 @@ public class BoardGUI {
 
     private final int[][] board;
     private final int cellSize;
+    private int currentPlayer;
 
     public BoardGUI(int size, int cellSize) {
         this.board = new int[size][size];
         this.cellSize = cellSize;
+        this.currentPlayer = 1;
     }
 
     public void clearBoard() {
@@ -18,24 +20,10 @@ public class BoardGUI {
             }
         }
     }
+    public void drawBoard(GraphicsContext gc) {
+        gc.setFill(Color.BURLYWOOD);
+        gc.fillRect(0, 0, board.length * cellSize, board.length * cellSize);
 
-    public void draw(GraphicsContext gc) {
-        // TODO: rysowanie kamieni
-        for (int i = 0; i < board.length; i++) {
-            for (int j = 0; j < board.length; j++) {
-                int stone = board[i][j];
-
-                if (stone == 1) {
-                    /*gc.setFill(Color.BLACK);
-                    // obliczanie współrzędnych kamienia
-                    double x = i * cellSize + cellSize / 4.0;
-                    double y = j * cellSize + cellSize / 4.0;
-
-                    gc.fillOval(x, y, cellSize / 2.0, cellSize / 2.0);*/
-                }
-            }
-        }
-        // rysowanie linii
         gc.setStroke(Color.BLACK);
         for (int k = 0; k < board.length; k++) {
             double xLine = k * cellSize + cellSize / 2.0;
@@ -46,8 +34,27 @@ public class BoardGUI {
         }
     }
 
+    public void drawStones(GraphicsContext gc) {
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board.length; j++) {
+                int stone = board[i][j];
+
+                if (stone != 0) {
+                    gc.setFill(stone == 1 ? Color.BLACK : Color.WHITE);
+                    double x = i * cellSize + cellSize / 4.0;
+                    double y = j * cellSize + cellSize / 4.0;
+
+                    gc.fillOval(x, y, cellSize / 2.0, cellSize / 2.0);
+                }
+            }
+        }
+    }
+
     public void placeStone(int x, int y) {
-        // TODO: implementacja logiki gry
-        board[x][y] = 1; // wstępne umieszczenie czarnego kamienia
+        // TODO: implementacja logiki gry, uwzględniająca gracza (1 lub 2)
+        if(board[x][y] == 0) {
+            board[x][y] = currentPlayer;
+            currentPlayer = 3 - currentPlayer;
+        }
     }
 }
