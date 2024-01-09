@@ -17,8 +17,11 @@ public class PlayerOptions {
 
     public void showPlayerOptions() {
         VBox root = new VBox(10);
+        root.setId("playerOptionsRoot");
         Button twoPlayersButton = new Button("2 PLAYERS");
+        twoPlayersButton.setId("twoPlayersButton");
         Button botButton = new Button("GAME WITH BOT");
+        botButton.setId("botButton");
 
         twoPlayersButton.setOnAction(e -> {
             BoardSizeSelector boardSizeSelector = new BoardSizeSelector(primaryStage);

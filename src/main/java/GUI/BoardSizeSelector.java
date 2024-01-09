@@ -17,9 +17,13 @@ public class BoardSizeSelector {
 
     public void initSizeSelectionScreen() {
         VBox root = new VBox(10);
+        root.setId("sizeSelectionRoot");
         Button size19Button = new Button("9x9");
+        size19Button.setId("size9Button");
         Button size13Button = new Button("13x13");
+        size13Button.setId("size13Button");
         Button size9Button = new Button("19x19");
+        size9Button.setId("size19Button");
 
         size19Button.setOnAction(e -> {
             selectedBoardSize = 9;
@@ -43,7 +47,7 @@ public class BoardSizeSelector {
         primaryStage.setScene(scene);
     }
 
-    private void showGameBoard(int boardSize) {
+    void showGameBoard(int boardSize) {
         primaryStage.hide();
         GameGUI gameGUI = new GameGUI(boardSize);
         gameGUI.initGame();

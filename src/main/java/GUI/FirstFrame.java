@@ -20,7 +20,9 @@ public class FirstFrame extends Application {
 
         VBox root = new VBox(10);
         Button newGameButton = new Button("NEW GAME");
+        newGameButton.setId("newGameButton");
         Button loadGameButton = new Button("LOAD GAME");
+        loadGameButton.setId("loadGameButton");
 
         newGameButton.setOnAction(e -> {
             // uruchamianie klienta w osobnym wątku

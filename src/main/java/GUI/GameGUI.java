@@ -30,6 +30,7 @@ public class GameGUI {
 
         gameStage.setTitle("GO GAME");
         StackPane root = new StackPane();
+        root.setId("gameBoardRoot");
         Canvas canvas = new Canvas(650, 600);
         Button confirmMoveButton = new Button("CONFIRM MOVE");
         Button doNotMoveButton = new Button("DON'T MOVE");
