@@ -7,7 +7,7 @@ public class BoardGUI {
 
     private final int[][] board;
     private final int cellSize;
-    private int currentPlayer;
+    private static int currentPlayer;
 
     public BoardGUI(int size, int cellSize) {
         this.board = new int[size][size];
@@ -61,5 +61,13 @@ public class BoardGUI {
             board[x][y] = currentPlayer;
             currentPlayer = 3 - currentPlayer;
         }
+    }
+
+    public int[][] getBoard() {
+        return board;
+    }
+
+    public static int getCurrentPlayer() {
+        return currentPlayer;
     }
 }

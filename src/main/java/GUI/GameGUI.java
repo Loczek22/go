@@ -16,7 +16,7 @@ import javafx.geometry.Pos;
 public class GameGUI {
 
     private final int boardSize;
-    private BoardGUI boardGUI;
+    BoardGUI boardGUI;
 
     public GameGUI(int boardSize) {
         this.boardSize = boardSize;
@@ -33,7 +33,9 @@ public class GameGUI {
         root.setId("gameBoardRoot");
         Canvas canvas = new Canvas(650, 600);
         Button confirmMoveButton = new Button("CONFIRM MOVE");
+        confirmMoveButton.setId("confirmButton");
         Button doNotMoveButton = new Button("DON'T MOVE");
+        doNotMoveButton.setId("doNotMoveButton");
 
         int cellSize = (int) (canvas.getHeight() / boardSize);
 
