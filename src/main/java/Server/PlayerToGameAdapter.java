@@ -7,11 +7,11 @@ import java.net.Socket;
 
 public class PlayerToGameAdapter {
     public Socket socket9;
-    private PrintWriter out9;
+    protected PrintWriter out9;
     public Socket socket13;
-    private PrintWriter out13;
+    protected PrintWriter out13;
     public Socket socket19;
-    private PrintWriter out19;
+    protected PrintWriter out19;
 
     public void addNewPlayer(Socket socket, int targetBoardSize) {
         try{
@@ -58,7 +58,7 @@ public class PlayerToGameAdapter {
         }
 
     }
-    private void sendMessageGameStarts(PrintWriter out1, PrintWriter out2, int boardSize){
+    public void sendMessageGameStarts(PrintWriter out1, PrintWriter out2, int boardSize){
         out1.println("Znaleziono grę");
         out2.println("Znaleziono grę");
         System.out.println("Nowa gra " + boardSize + " startuje");
