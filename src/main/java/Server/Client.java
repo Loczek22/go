@@ -1,9 +1,12 @@
 package Server;
 
 import GUI.BoardSizeSelector;
+import GUI.FirstFrame;
 
 import java.net.*;
 import java.io.*;
+
+import static java.lang.System.out;
 
 
 public class Client {
@@ -45,12 +48,15 @@ public class Client {
             socket.close();
 
         } catch (UnknownHostException ex) {
-            System.out.println("Server.Server not found: " + ex.getMessage());
+            out.println("Server.Server not found: " + ex.getMessage());
 
         } catch (IOException ex) {
-            System.out.println("I/O error: " + ex.getMessage());
+            out.println("I/O error: " + ex.getMessage());
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+    }
+    public void sendMoveToServer(int x, int y) {
+        out.println(x + " " + y);
     }
 }

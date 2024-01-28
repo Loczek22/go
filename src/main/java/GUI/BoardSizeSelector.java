@@ -1,5 +1,6 @@
 package GUI;
 
+import Server.Client;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
@@ -49,7 +50,13 @@ public class BoardSizeSelector {
 
     void showGameBoard(int boardSize) {
         primaryStage.hide();
-        GameGUI gameGUI = new GameGUI(boardSize);
+        Client client = new Client();
+        // uruchamianie klienta w osobnym wątku
+        Thread clientThread = new Thread(() -> {
+            client.startClient();
+        });
+        clientThread.start();
+        GameGUI gameGUI = new GameGUI(boardSize, client);
         gameGUI.initGame();
     }
 

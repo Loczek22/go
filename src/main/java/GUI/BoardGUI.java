@@ -15,6 +15,18 @@ public class BoardGUI {
         this.currentPlayer = 1;
     }
 
+    public static void setCurrentPlayer(int i) {
+        currentPlayer = i;
+    }
+
+    public boolean isEmpty(int x, int y) {
+        if(board[x][y] == 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public void clearBoard() {
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board.length; j++) {
@@ -59,8 +71,14 @@ public class BoardGUI {
         // TODO: implementacja logiki gry, uwzględniająca gracza (1 lub 2)
         if(board[x][y] == 0) {
             board[x][y] = currentPlayer;
-            currentPlayer = 3 - currentPlayer;
         }
+    }
+
+    public boolean hasStone(int x, int y) {
+        return board[x][y] != 0;
+    }
+    public void removeStone(int x, int y) {
+        board[x][y] = 0;
     }
 
     public int[][] getBoard() {

@@ -25,12 +25,6 @@ public class FirstFrame extends Application {
         loadGameButton.setId("loadGameButton");
 
         newGameButton.setOnAction(e -> {
-            // uruchamianie klienta w osobnym wątku
-            Thread clientThread = new Thread(() -> {
-                Client client = new Client();
-                client.startClient();
-            });
-            clientThread.start();
             PlayerOptions playerOptions = new PlayerOptions(primaryStage);
             playerOptions.showPlayerOptions();
         });
