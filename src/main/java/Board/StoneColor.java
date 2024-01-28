@@ -1,4 +1,4 @@
-package niepotrzebne;
+package Board;
 
 public enum StoneColor {
     BLACK('B'),

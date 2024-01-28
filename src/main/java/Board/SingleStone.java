@@ -1,13 +1,16 @@
-package niepotrzebne;
+package Board;
 
 public class SingleStone {
     private StoneColor color;
     private int x, y; // współrzędne kamienia na planszy
+    private StonesGroup group;
+
 
     public SingleStone(StoneColor color, int x, int y) {
         this.color = color;
         this.x = x;
         this.y = y;
+        group = new StonesGroup(color);
     }
     public int getX() {
         return x;
@@ -18,8 +21,13 @@ public class SingleStone {
     public StoneColor getColor() {
         return color;
     }
-    // sprawdzenie czy kamień ma oddechy
-    public boolean hasBreaths() {
-        return true;
+    public StonesGroup getGroup(){
+        return group;
     }
+    public void setGroup(StonesGroup group){
+        this.group = group;
+    }
+    public void destroy(){
+    }
+
 }
