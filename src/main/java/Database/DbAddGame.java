@@ -6,8 +6,8 @@ import java.sql.*;
 
 public class DbAddGame {
     Connection conn = null;
-    private static final String NEXT_ID = "SELECT COALESCE(MAX(game_id), 0) FROM games;";
-    private static final String INSERT_GAMEID = "INSERT INTO games (game_id) VALUES (?);";
+    private static final String NEXT_ID = "SELECT COALESCE(MAX(game_id), 0) FROM boards;";
+    private static final String INSERT_GAMEID = "INSERT INTO boards (game_id) VALUES (?);";
     public int getIdGame() {
         int Id = 0;
         try {

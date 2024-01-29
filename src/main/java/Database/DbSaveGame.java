@@ -1,5 +1,7 @@
 package Database;
 
+import javafx.scene.paint.Color;
+
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -7,9 +9,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class DbSaveGame {
-    private static final String MAX_ID = "SELECT MAX(game_id) FROM games";
-    private static final String INSERT_GAME = "INSERT INTO games (game_id, move_id, x, y, color) VALUES (?, ?, ?, ?, ?)";
+    private static final String MAX_ID = "SELECT MAX(game_id) FROM boards";
+    private static final String INSERT_GAME = "INSERT INTO games (game_id, move_id, x, y, color, move_type) VALUES (?, ?, ?, ?, ?, ?)";
     private static final String MAX_MOVE = "SELECT MAX(move_id) FROM games WHERE game_id = ?";
+    private static final String UPDATE_WINNER = "UPDATE boards SET winner = ? WHERE game_id = ?";
     Connection conn = null;
 
     public int getIDGame() {
@@ -75,5 +78,21 @@ public class DbSaveGame {
         return Id + 1;
     }
 
+    public void setWinner(Color color, int idGame) {
+        try {
+            conn = JDBConnector.getConnection();
+            String winner = (color == Color.BLACK) ? "BLACK" : "WHITE";
+            try (PreparedStatement pstmt = conn.prepareStatement(UPDATE_WINNER)) {
+                pstmt.setString(1, winner);
+                pstmt.setInt(2, idGame);
+
+                pstmt.executeUpdate();
+            }
+        } catch (ClassNotFoundException | SQLException | IOException e) {
+            e.printStackTrace();
+        } finally {
+            JDBConnector.release(null, null, conn);
+        }
+    }
 
 }

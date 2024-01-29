@@ -6,6 +6,7 @@ public class Move {
     private final int x;
     private final int y;
     private final String color;
+    private final String moveType;
 
     public Move(Builder builder) {
         this.gameId = builder.gameId;
@@ -13,6 +14,7 @@ public class Move {
         this.x = builder.x;
         this.y = builder.y;
         this.color = builder.color;
+        this.moveType = builder.moveType;
     }
 
     public int getGameId() {
@@ -35,9 +37,14 @@ public class Move {
         return color;
     }
 
+    public String getMoveType() {
+        return moveType;
+    }
+
     public static class Builder {
         private final int gameId;
         private final int moveId;
+        public String moveType;
         private int x;
         private int y;
         private String color;
@@ -59,6 +66,11 @@ public class Move {
 
         public Builder color(String color) {
             this.color = color;
+            return this;
+        }
+
+        public Builder moveType(String moveType) {
+            this.moveType = moveType;
             return this;
         }
 
