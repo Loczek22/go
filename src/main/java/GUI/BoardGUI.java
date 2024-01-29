@@ -57,8 +57,8 @@ public class BoardGUI {
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board.length; j++) {
                 double radius = cellSize / 4.0;
-                double x = i * cellSize + cellSize / 4.0;
-                double y = j * cellSize + cellSize / 4.0;
+                double x = i * cellSize + cellSize / 2.0;
+                double y = j * cellSize + cellSize / 2.0;
                 StoneGUI stone = new StoneGUI(StoneColor.BLACK, x, y, radius, i, j);
                 stone.setOnMouseClicked(e -> {
                     System.out.println(stone.getFill());
