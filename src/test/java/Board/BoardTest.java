@@ -23,16 +23,6 @@ public class BoardTest {
     }
 
     @Test
-    public void testCalculateBreaths() {
-        Board board = new Board(19);
-        StonesGroup group = new StonesGroup(StoneColor.BLACK);
-        group.addStone(new SingleStone(StoneColor.BLACK, 1, 1));
-
-        int breaths = board.calculateBreaths(group);
-        assertEquals(4, breaths);
-    }
-
-    @Test
     void testCheckKo() {
         Board board = new Board(9);
         board.stones[1][1] = new SingleStone(StoneColor.BLACK, 1, 1);
@@ -81,24 +71,84 @@ public class BoardTest {
         assertEquals(1, board.countPointsOfGroup(List.of(new int[]{0, 0})));
     }
 
-   /* @Test
-    public void testShowGameBoard() {
-
-
+    @Test
+    public void testUpdateBreaths() {
         Board board = new Board(19);
         StonesGroup group = new StonesGroup(StoneColor.BLACK);
         SingleStone stone = new SingleStone(StoneColor.BLACK, 5, 5);
+        SingleStone stone2 = new SingleStone(StoneColor.BLACK, 6, 5);
         board.placeStone(stone);
         group.addStone(stone);
-        stone = new SingleStone(StoneColor.BLACK, 6, 5);
-        board.placeStone(stone);
-        group.addStone(stone);
-        stone = new SingleStone(StoneColor.BLACK, 6, 6);
-        board.placeStone(stone);
-        group.addStone(stone);
-        System.out.println(group.getBreaths());
+        board.updateBreaths();
+        assertEquals(4, group.getBreaths());
+        board.placeStone(stone2);
+        group.addStone(stone2);
+        board.updateBreaths();
+        assertEquals(6, group.getBreaths());
+    }
 
-        assertEquals(8, board.checkBreathsForNewStone(5, 6));
+    @Test
+    public void testCalculateBreaths() {
+        Board board = new Board(19);
+        SingleStone stone =new SingleStone(StoneColor.BLACK, 1, 1);
+        board.placeStone(stone);
+        board.updateGroups(stone);
+        board.updateBreaths();
 
+        int breaths = board.calculateBreaths(stone.getGroup());
+        assertEquals(4, breaths);
+
+        SingleStone stone2 = new SingleStone(StoneColor.BLACK, 1, 2);
+        board.placeStone(stone2);
+        board.updateGroups(stone2);
+        board.updateBreaths();
+        int breaths2 = board.calculateBreaths(stone2.getGroup());
+
+        assertEquals(6, breaths2);
+    }
+
+    @Test
+    public void testUpdateGroups() {
+        Board board = new Board(19);
+        SingleStone stone = new SingleStone(StoneColor.BLACK, 5, 5);
+        board.placeStone(stone);
+        board.updateGroups(stone);
+        assertEquals(stone.getGroup(), board.stones[5][5].getGroup());
+    }
+
+    @Test
+    public void testRemoveGroup() {
+        Board board = new Board(19);
+        SingleStone stone = new SingleStone(StoneColor.BLACK, 5, 5);
+        board.placeStone(stone);
+        board.updateGroups(stone);
+        board.removeGroup(stone.getGroup());
+        assertNull(board.stones[5][5]);
+    }
+
+/*    @Test
+    public void testWillKill() {
+        Board board = new Board(19);
+        SingleStone stone = new SingleStone(StoneColor.BLACK, 5, 5);
+        board.placeStone(stone);
+        board.updateGroups(stone);
+
+        SingleStone stone2 = new SingleStone(StoneColor.WHITE, 5, 6);
+        SingleStone stone3 = new SingleStone(StoneColor.WHITE, 6, 5);
+        SingleStone stone4 = new SingleStone(StoneColor.WHITE, 4, 5);
+        SingleStone stone5 = new SingleStone(StoneColor.WHITE, 5, 4);
+
+        board.placeStone(stone2);
+        board.updateGroups(stone2);
+        board.placeStone(stone3);
+        board.updateGroups(stone3);
+        board.placeStone(stone4);
+        board.updateGroups(stone4);
+        board.placeStone(stone5);
+        board.updateGroups(stone5);
+
+        board.updateBreaths();
+
+        assertTrue(board.willDie(5,5));
     }*/
 }
