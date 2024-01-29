@@ -1,5 +1,7 @@
 package Board;
 
+import Server.ServerPlayer;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -202,14 +204,14 @@ public class Board {
         }
     }
 
-    public void endGame() {
+    public String endGame() {
 
         if(countPoints(StoneColor.BLACK) > countPoints(StoneColor.WHITE)){
-            System.out.println("Black wins");
+            return "BLACK WINS";
         } else if (countPoints(StoneColor.BLACK) < countPoints(StoneColor.WHITE)) {
-            System.out.println("White wins");
+            return "WHITE WINS";
         }else{
-            System.out.println("Draw");
+            return "DRAW";
         }
 
     }
@@ -268,4 +270,5 @@ public class Board {
         return group;
 
     }
+
 }

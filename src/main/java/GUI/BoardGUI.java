@@ -1,39 +1,40 @@
 package GUI;
 
+import Board.Player;
+import Board.StoneColor;
+import GUI.StoneGUI.StoneGUI;
+import javafx.scene.Group;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 public class BoardGUI {
 
-    private final int[][] board;
+    private final StoneGUI[][] board;
     private final int cellSize;
-    private static int currentPlayer;
+    private static Player player;
+    private GameGUI gameGui;
+    private StoneGUI move;
 
-    public BoardGUI(int size, int cellSize) {
-        this.board = new int[size][size];
+    public BoardGUI(int size, int cellSize, StoneColor color, Player player, GameGUI gameGUI) {
+        this.board = new StoneGUI[size][size];
         this.cellSize = cellSize;
-        this.currentPlayer = 1;
+        this.player = player;
+        this.gameGui = gameGUI;
     }
 
     public static void setCurrentPlayer(int i) {
-        currentPlayer = i;
+        //currentPlayer = i;
     }
 
     public boolean isEmpty(int x, int y) {
-        if(board[x][y] == 0) {
+        if(!board[x][y].isVisible()) {
             return true;
         } else {
             return false;
         }
     }
 
-    public void clearBoard() {
-        for (int i = 0; i < board.length; i++) {
-            for (int j = 0; j < board.length; j++) {
-                board[i][j] = 0;
-            }
-        }
-    }
+
     public void drawBoard(GraphicsContext gc) {
         gc.setFill(Color.BURLYWOOD);
         gc.fillRect(0, 0, board.length * cellSize, board.length * cellSize);
@@ -51,41 +52,82 @@ public class BoardGUI {
         gc.strokeRect(0, 0, board.length * cellSize, board.length * cellSize);
     }
 
-    public void drawStones(GraphicsContext gc) {
+    public Group createStones() {
+        Group group = new Group();
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board.length; j++) {
-                int stone = board[i][j];
+                double radius = cellSize / 4.0;
+                double x = i * cellSize + cellSize / 4.0;
+                double y = j * cellSize + cellSize / 4.0;
+                StoneGUI stone = new StoneGUI(StoneColor.BLACK, x, y, radius, i, j);
+                stone.setOnMouseClicked(e -> {
+                    System.out.println(stone.getFill());
+                    if(player.isYourTurn()){
+                        player.sendMove(stone.getX(), stone.getY());
+                        String answer = player.getMessageFromServer();
+                        System.out.println(answer);
+                        System.out.println(stone.getFill());
+                        if(answer.equals("ok")){
+                            String board = player.getMessageFromServer();
+                            System.out.println(board);
+                            updateBoard(board);
+                            player.setYourTurn(false);
+                            Receiver receiver = new Receiver(player, this);
+                            Thread t = new Thread(receiver);
+                            t.start();
+                        }
+                        else{
+                            System.out.println("chuj");
+                        }
+                    }
 
-                if (stone != 0) {
-                    gc.setFill(stone == 1 ? Color.BLACK : Color.WHITE);
-                    double x = i * cellSize + cellSize / 4.0;
-                    double y = j * cellSize + cellSize / 4.0;
-
-                    gc.fillOval(x, y, cellSize / 2.0, cellSize / 2.0);
-                }
+                });
+                group.getChildren().add(stone);
+                board[i][j] = stone;
             }
         }
+        return group;
     }
 
-    public void placeStone(int x, int y) {
-        // TODO: implementacja logiki gry, uwzględniająca gracza (1 lub 2)
-        if(board[x][y] == 0) {
-            board[x][y] = currentPlayer;
+    /*public void placeStone(int x, int y) {
+        if(board[x][y].getColor() != Color.TRANSPARENT) {
+            board[x][y].changeState(player.getStoneColor());
         }
+    }*/
+    public StoneGUI getStone(){
+        return move;
+    }
+    public void setStone(StoneGUI stone){
+        move = stone;
     }
 
-    public boolean hasStone(int x, int y) {
-        return board[x][y] != 0;
-    }
-    public void removeStone(int x, int y) {
-        board[x][y] = 0;
-    }
 
-    public int[][] getBoard() {
+
+    public StoneGUI[][] getBoard() {
         return board;
     }
 
-    public static int getCurrentPlayer() {
-        return currentPlayer;
+    public void updateBoard(String boardstr){
+        int index=0;
+        for(int x = 0; x < gameGui.getBoardSize(); x++) {
+            for (int y = 0; y < gameGui.getBoardSize(); y++) {
+                switch (boardstr.charAt(index)) {
+                    case 'B':
+                        System.out.println(x+ " " + y);
+                        board[x][y].setFill(Color.BLACK);
+                        //board[x][y].
+                        System.out.println(board[x][y].getFill());
+                        break;
+                    case 'W':
+                        board[x][y].setFill(Color.WHITE);
+                        break;
+                    case '0':
+                        board[x][y].setFill(Color.TRANSPARENT);
+                        break;
+                }
+                index +=1 ;
+
+            }
+        }
     }
 }

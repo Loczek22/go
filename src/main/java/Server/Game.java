@@ -1,16 +1,27 @@
 package Server;
 
+import Board.*;
+
 import java.io.*;
 import java.net.*;
+import java.util.Arrays;
 
 
 public class Game extends Thread {
     private Socket socket1, socket2;
     private boolean gameIsOver = false;
+    private Board board;
+    private ServerPlayer PlayerB;
+    private ServerPlayer PlayerW;
+    private ServerPlayer currentPlayer;
+    private ServerPlayer otherPlayer;
+    private int boardSize;
 
-    public Game(Socket socket1, Socket socket2) {
+    public Game(Socket socket1, Socket socket2, int boardSize) {
         this.socket1 = socket1;
         this.socket2 = socket2;
+        this.board = new Board(boardSize);
+        this.boardSize = boardSize;
     }
 
     public void run() {
@@ -33,16 +44,54 @@ public class Game extends Thread {
             PrintWriter out2 = new PrintWriter(output2, true);
 
             sendMessageToPlayers("Rozpoczynanie gry", out1, out2);
+
+            PlayerB = new ServerPlayer(StoneColor.BLACK, out1, in1);
+            PlayerW = new ServerPlayer(StoneColor.WHITE, out2, in2);
+
+            currentPlayer = PlayerB;
+            otherPlayer = PlayerW;
+            boolean previousTurnPass = false;
             do {
+                String[] move = currentPlayer.receiveInfo().split(" ");
+                if(move[0].equals("p")){
+                    if(previousTurnPass){
+                        String info = board.endGame();
+                        sendMessageToPlayers(info, out1, out2);
+                    }
+                    previousTurnPass = true;
+                    changeCurrentPlayer();
+                    sendMessageToPlayers(boardToString(), out1, out2);
+                } else if (move[0].equals("m")) {
+                    System.out.println("move");
+                    SingleStone stone = new SingleStone(currentPlayer.getStoneColor(), Integer.parseInt(move[1]), Integer.parseInt(move[2]));
+                    if(board.placeStone(stone)){
+                        board.updateGroups(stone);
+                        board.updateBreaths();
+                        System.out.println("moveinfo");
+                        currentPlayer.sendInfo("ok");
+                        System.out.println("moveok");
+                        previousTurnPass = false;
+                        sendMessageToPlayers(boardToString(), out1, out2);
+                    }else{
+                        currentPlayer.sendInfo("Incorrect move");
+                        sendMessageToPlayers(boardToString(), out1, out2);
+                    }
+                } else if (move[0].equals("l")) {
 
-                //TODO: logika gry
+                    gameIsOver = true;
+                    String info;
+                    if(otherPlayer.getStoneColor() == StoneColor.BLACK){
+                        info = "BLACK WINS";
+                    }else{
+                        info = "WHITE WINS";
+                    }
+                    sendMessageToPlayers(info, out1, out2);
+                }
 
-                // Odbieranie od socketa
-                // in.readLine();
-                // Wysylanie do socketa
-                // out.println(message);
 
             } while (!gameIsOver);
+
+
 
             socket1.close();
             socket2.close();
@@ -55,5 +104,28 @@ public class Game extends Thread {
     private void sendMessageToPlayers(String message, PrintWriter out1, PrintWriter out2){
         out1.println(message);
         out2.println(message);
+    }
+    private void changeCurrentPlayer(){
+        if(currentPlayer == PlayerB){
+            currentPlayer = PlayerW;
+            otherPlayer = PlayerB;
+        }
+        else{
+            currentPlayer = PlayerB;
+            otherPlayer = PlayerW;
+        }
+    }
+    public String boardToString(){
+        String boardstr="";
+        for(int x = 0; x < boardSize; x++){
+            for(int y = 0; y < boardSize; y++){
+                if(board.getStones()[x][y] != null) {
+                    boardstr += board.getStones()[x][y].getColor() == StoneColor.BLACK ? "B" : "W";
+                }else{
+                    boardstr +="0";
+                }
+            }
+        }
+        return boardstr;
     }
 }

@@ -25,7 +25,7 @@ public class PlayerToGameAdapter {
                         out.println("Oczekiwanie na drugiego gracza");
                     }else{
                         sendMessageGameStarts(out, out9, 9);
-                        new Game(socket9, socket).start();
+                        new Game(socket9, socket, 9).start();
                         socket9 = null;
                     }
                     break;
@@ -36,7 +36,7 @@ public class PlayerToGameAdapter {
                         out.println("Oczekiwanie na drugiego gracza");
                     }else{
                         sendMessageGameStarts(out, out13, 13);
-                        new Game(socket13, socket).start();
+                        new Game(socket13, socket, 13).start();
                         socket13 = null;
                     }
                     break;
@@ -46,7 +46,7 @@ public class PlayerToGameAdapter {
                         out19 = out;
                         out.println("Oczekiwanie na drugiego gracza");
                     }else{
-                        new Game(socket19, socket).start();
+                        new Game(socket19, socket, 19).start();
                         sendMessageGameStarts(out, out19, 19);
                         socket19 = null;
                     }

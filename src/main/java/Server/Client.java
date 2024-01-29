@@ -1,62 +1,67 @@
 package Server;
 
+import Board.Player;
+import Board.StoneColor;
 import GUI.BoardSizeSelector;
-import GUI.FirstFrame;
+import GUI.GameGUI;
+import GUI.WaitForSecondPlayer;
 
 import java.net.*;
 import java.io.*;
 
-import static java.lang.System.out;
-
 
 public class Client {
-    public void startClient() {
+    private int boardSize;
+    private Socket socket;
 
+    public PrintWriter getOut() {
+        return out;
+    }
+
+    public BufferedReader getIn() {
+        return in;
+    }
+    StoneColor color;
+
+    private PrintWriter out;
+    private BufferedReader in;
+    public Client(int boardSize){
+        this.boardSize = boardSize;
         try  {
 
-            Socket socket = new Socket("localhost", 4444);
+            socket = new Socket("localhost", 4444);
             // Wysylanie do serwera
-            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+            out = new PrintWriter(socket.getOutputStream(), true);
             // Odbieranie z serwera
-            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
-            // czekanie az klient wybierze rozmiar planszy
-            while (BoardSizeSelector.getSelectedBoardSize() == 0) {
-                Thread.sleep(100);
-            }
-
-            out.println(BoardSizeSelector.getSelectedBoardSize());
+            out.println(boardSize);
 
             // Pierwszy komunikat od serwera (czy znaleziono drugiego gracza)
             String first_message = in.readLine();
             System.out.println(first_message);
 
             if("Oczekiwanie na drugiego gracza".equals(first_message)) {
+                color = StoneColor.BLACK;
                 System.out.println(in.readLine());
+                WaitForSecondPlayer wait = new WaitForSecondPlayer();
+            }
+            else{
+                color = StoneColor.WHITE;
             }
             System.out.println(in.readLine());
 
-            //do {
-                //TODO: logika dla gracza
-
-                // Wysylanie do serwera
-                //out.println(\);
-                // Odbieranie z serwera
-                //in.readLine();
-
-            //} while ("Server.Game over".equals(messageFromServer));
-            socket.close();
-
         } catch (UnknownHostException ex) {
-            out.println("Server.Server not found: " + ex.getMessage());
+            System.out.println("Server.Server not found: " + ex.getMessage());
 
         } catch (IOException ex) {
-            out.println("I/O error: " + ex.getMessage());
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+            System.out.println("I/O error: " + ex.getMessage());
         }
     }
-    public void sendMoveToServer(int x, int y) {
-        out.println(x + " " + y);
+    public void start() {
+        GameGUI gameGUI = new GameGUI(boardSize, new Player(color, out, in));
+        gameGUI.initGame();
+        //Thread t = new Thread(gameGUI);
+        //t.start();
     }
 }
