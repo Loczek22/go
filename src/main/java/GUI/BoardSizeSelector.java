@@ -2,7 +2,9 @@ package GUI;
 
 import Server.Client;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.geometry.Pos;
@@ -27,18 +29,18 @@ public class BoardSizeSelector {
         size9Button.setId("size19Button");
 
         size19Button.setOnAction(e -> {
-            selectedBoardSize = 9;
-            showGameBoard(9);
+            setSelectedBoardSize(9);
+            waitForOpponent();
         });
 
         size13Button.setOnAction(e -> {
-            selectedBoardSize = 13;
-            showGameBoard(13);
+            setSelectedBoardSize(13);
+            waitForOpponent();
         });
 
         size9Button.setOnAction(e -> {
-            selectedBoardSize = 19;
-            showGameBoard(19);
+            setSelectedBoardSize(19);
+            waitForOpponent();
         });
 
         root.getChildren().addAll(size19Button, size13Button, size9Button);
@@ -62,5 +64,35 @@ public class BoardSizeSelector {
 
     public static int getSelectedBoardSize() {
         return selectedBoardSize;
+    }
+
+    public static void setSelectedBoardSize(int selectedBoardSize) {
+        BoardSizeSelector.selectedBoardSize = selectedBoardSize;
+    }
+    private void waitForOpponent() {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("INFO");
+        alert.setHeaderText("WAIT FOR YOUR OPPONENT");
+        ButtonType OK = new ButtonType("OK");
+        ButtonType CANCEL = new ButtonType("CANCEL");
+        alert.getButtonTypes().setAll(OK, CANCEL);
+
+        // Dodanie nasłuchiwania na kliknięcia przycisków
+        Button okButton = (Button) alert.getDialogPane().lookupButton(OK);
+        okButton.setOnAction(event -> {
+            System.out.println("OK");
+            alert.hide();
+            showGameBoard(getSelectedBoardSize());
+        });
+
+        Button cancelButton = (Button) alert.getDialogPane().lookupButton(CANCEL);
+        cancelButton.setOnAction(event -> {
+            System.out.println("CANCEL");
+            alert.hide();
+            BoardSizeSelector boardSizeSelector = new BoardSizeSelector(primaryStage);
+            boardSizeSelector.initSizeSelectionScreen();
+        });
+
+        alert.show();
     }
 }
