@@ -9,6 +9,7 @@ public class DbLoadGame {
     Connection conn = null;
     private static final String SELECT_MOVE = "SELECT x, y, color, move_type FROM games WHERE game_id = ? AND move_id = ?";
     private static final String SELECT_WINNER = "SELECT winner FROM boards WHERE game_id = ?";
+    private static final String SELECT_BOARD_SIZE = "SELECT boardSize FROM boards WHERE game_id = ?";
 
     public Move getMove(int gameId, int moveId) {
         try {
@@ -59,5 +60,28 @@ public class DbLoadGame {
             JDBConnector.release(null, null, conn);
         }
         return null;
+    }
+
+    public int getBoardSize(int idGame) {
+        int boardSize;
+        try {
+            conn = JDBConnector.getConnection();
+
+            try (PreparedStatement pstmt = conn.prepareStatement(SELECT_BOARD_SIZE)) {
+                pstmt.setInt(1, idGame);
+
+                ResultSet resultSet = pstmt.executeQuery();
+
+                if (resultSet.next()) {
+                    boardSize = resultSet.getInt(1);
+                    return boardSize;
+                }
+            }
+        } catch (ClassNotFoundException | SQLException | IOException e) {
+            e.printStackTrace();
+        } finally {
+            JDBConnector.release(null, null, conn);
+        }
+        return 0;
     }
 }

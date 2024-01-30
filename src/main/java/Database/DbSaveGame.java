@@ -78,6 +78,7 @@ public class DbSaveGame {
         } finally {
             JDBConnector.release(null, null, conn);
         }
+        System.out.println(Id+1);
         return Id + 1;
     }
 
