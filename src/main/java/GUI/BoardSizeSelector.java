@@ -33,19 +33,19 @@ public class BoardSizeSelector {
 
         size19Button.setOnAction(e -> {
             setSelectedBoardSize(9);
-            setBoardSizeToDb(9);
+            //setBoardSizeToDb(9);
             waitForOpponent();
         });
 
         size13Button.setOnAction(e -> {
             setSelectedBoardSize(13);
-            setBoardSizeToDb(13);
+            //setBoardSizeToDb(13);
             waitForOpponent();
         });
 
         size9Button.setOnAction(e -> {
             setSelectedBoardSize(19);
-            setBoardSizeToDb(19);
+            //setBoardSizeToDb(19);
             waitForOpponent();
         });
 

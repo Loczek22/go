@@ -21,7 +21,7 @@ import javafx.stage.Stage;
 import javafx.geometry.Pos;
 
 
-public class GameGUI implements Runnable{
+public class GameGUI{
 
     public int getBoardSize() {
         return boardSize;
@@ -30,23 +30,25 @@ public class GameGUI implements Runnable{
     private final int boardSize;
     BoardGUI boardGUI;
     private boolean gameEnded = false;
-    private boolean isYourTurn = true;
+    private boolean isYourTurn;
     private final Player player;
+    Label playerMoveLabel;
     Canvas canvas;
 
     public GameGUI(int boardSize, Player player) {
         this.boardSize = boardSize;
         this.player = player;
+        this.playerMoveLabel = player.isYourTurn() ? new Label("Your turn") : new Label("Opponents move");
     }
 
-    Label playerMoveLabel = new Label("YOUR TURN");
+
 
     public void initGame() {
         Stage gameStage = new Stage();
         gameStage.setResizable(false);
         boardGUI = new BoardGUI(boardSize, 600 / boardSize, player.getStoneColor(), player, this);
         if (!player.isYourTurn()){
-            Receiver receiver = new Receiver(player, boardGUI);
+            Receiver receiver = new Receiver(player, boardGUI, this);
             Thread t = new Thread(receiver);
             t.start();
         }
@@ -56,18 +58,39 @@ public class GameGUI implements Runnable{
         root.getChildren().add(pane);
         root.setId("gameBoardRoot");
         canvas = new Canvas(640, 600);
-        Button confirmMoveButton = new Button("CONFIRM MOVE");
-        confirmMoveButton.setId("confirmButton");
-        Button doNotMoveButton = new Button("DON'T MOVE");
-        doNotMoveButton.setId("doNotMoveButton");
+        Button passButton = new Button("PASS");
+        passButton.setId("passButton");
+        Button surrenderButton = new Button("SURRENDER");
+        surrenderButton.setId("doNotMoveButton");
 
-
-
-        doNotMoveButton.setOnAction(e -> {
-            handleDoNotMove();
+        passButton.setOnAction(e -> {
+            if(player.isYourTurn()){
+                player.sendPass();
+                String info = player.getMessageFromServer();
+                if(info.equals("ok")){
+                    String board = player.getMessageFromServer();
+                    boardGUI.updateBoard(board);
+                    player.setYourTurn(false);
+                    Receiver receiver = new Receiver(player, boardGUI,this);
+                    Thread t = new Thread(receiver);
+                    t.start();
+                }
+                else{
+                    String[] end = info.split(" ");
+                    System.out.println(end[2]);
+                    decideOnWinner(end[0], end[1]);
+                }
+            }
+        });
+        surrenderButton.setOnAction(e -> {
+            if(player.isYourTurn()){
+                player.giveUp();
+                String info = player.getMessageFromServer();
+                giveUp(info);
+            }
         });
 
-        HBox buttonBox = new HBox(confirmMoveButton, doNotMoveButton);
+        HBox buttonBox = new HBox(passButton, surrenderButton);
         buttonBox.setSpacing(30);
         buttonBox.setAlignment(Pos.TOP_LEFT);
 
@@ -89,8 +112,11 @@ public class GameGUI implements Runnable{
         gameStage.show();
     }
 
-    private void updateLabel(String text) {
-        playerMoveLabel.setText(text);
+    public void updateLabel() {
+        playerMoveLabel.setText(player.isYourTurn() ? "Your turn" : "Opponents turn");
+    }
+    public void updateLabel(String s){
+        playerMoveLabel.setText(s);
     }
 
     public static Group createStones(BoardGUI boardGUI) {
@@ -101,81 +127,36 @@ public class GameGUI implements Runnable{
         GraphicsContext gc = canvas.getGraphicsContext2D();
         boardGUI.drawBoard(gc);
     }
-
-
-    private void handleDoNotMove() {
-        if (!gameEnded) {
-            int i;
-            if (true) {
-                i = 2;
-            } else {
-                i = 1;
-            }
-            BoardGUI.setCurrentPlayer(i);
-            updateLabel("WAIT FOR YOUR OPPONENT'S MOVE");
-            //client.sendMoveToServer(-1, -1);
-            //decideOnWinner();
-        }
-    }
-
-    private void decideOnWinner() {
+    public void decideOnWinner(String white, String black) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("GAME OVER");
         alert.setHeaderText("CHOOSE WINNER");
         ButtonType buttonWhite = new ButtonType("WHITE");
         ButtonType buttonBlack = new ButtonType("BLACK");
         alert.getButtonTypes().setAll(buttonWhite, buttonBlack);
+        Label text = new Label("White "+white+" : "+black+ "Black");
+        alert.getDialogPane().setContent(text);
 
         alert.showAndWait().ifPresent(buttonType -> {
             if (buttonType == buttonWhite) {
-                updateLabel("PLAYER 1 WON");
+                updateLabel("WHITE WON");
             } else if (buttonType == buttonBlack) {
-                updateLabel("PLAYER 2 WON");
+                updateLabel("BLACK 2 WON");
             }
             gameEnded = true;
         });
     }
 
-    @Override
-    public void run() {
-        try {
-            while (!gameEnded) {
-                if (isYourTurn) {
-                    waitForMove();
-                    System.out.println("KUTAS");
-                    //sendMove(boardGUI.getStone());
-                    receiveInfoFromServer();
-
-                }
-            }
-        }catch(InterruptedException ex){}
+    public void giveUp(String s){
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("GAME OVER");
+        alert.setHeaderText(s);
+        ButtonType button = new ButtonType("OK");
+        alert.getButtonTypes().setAll(button);
+        alert.showAndWait().ifPresent(buttonType -> {
+            gameEnded = true;
+        });
     }
 
-    public void waitForMove() throws InterruptedException{
-        while(!(isYourTurn && boardGUI.getStone() == null) || !isYourTurn){
-            Thread.sleep(100);
-        }
-        System.out.println("CHUJ");
-    }
-    /*public void sendMove(StoneGUI stone){
-        System.out.println("vsoub1"+player.isYourTurn());
-        if(player.isYourTurn()){
-            player.sendMove(stone.getX(), stone.getY());
-            boardGUI.setStone(null);
-            String info = player.getMessageFromServer();
-            System.out.println(info);
-            if(info.equals("ok")){
-                System.out.println("vsoub2");
-                stone.changeState(player.getStoneColor());
-                player.setYourTurn(false);
-                System.out.println("vsoub3");
-                player.getMessageFromServer();
-            }else{
-                stone.changeState(player.getStoneColor());
-            }
-        }
-    }*/
-    public void receiveInfoFromServer() {
-        String info = player.getMessageFromServer();
-    }
+
 }

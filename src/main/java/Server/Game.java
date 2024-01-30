@@ -28,8 +28,8 @@ public class Game extends Thread {
         this.board = new Board(boardSize);
         this.boardSize = boardSize;
 
-        DbSaveGame dbSaveGame = new DbSaveGame();
-        gameId = dbSaveGame.getIDGame();
+        //DbSaveGame dbSaveGame = new DbSaveGame();
+        //gameId = dbSaveGame.getIDGame();
     }
 
     public void run() {
@@ -59,16 +59,17 @@ public class Game extends Thread {
             currentPlayer = PlayerB;
             otherPlayer = PlayerW;
             boolean previousTurnPass = false;
-            do {
-                System.out.println("chuj");
+            while (!gameIsOver){
+                if(board.getStones()[0][0]!=null){System.out.println(board.getStones()[0][0].getGroup().getBreaths());}
                 String[] move = currentPlayer.receiveInfo().split(" ");
-                System.out.println("chuj2");
                 if(move[0].equals("p")){
-                    passMoveToDatabase(gameId, Integer.parseInt(move[1]), Integer.parseInt(move[2]));
+                    //passMoveToDatabase(gameId, Integer.parseInt(move[1]), Integer.parseInt(move[2]));
                     if(previousTurnPass){
                         String info = board.endGame();
                         sendMessageToPlayers(info, out1, out2);
+                        gameIsOver = true;
                     }
+                    currentPlayer.sendInfo("ok");
                     previousTurnPass = true;
                     changeCurrentPlayer();
                     sendMessageToPlayers(boardToString(), out1, out2);
@@ -81,13 +82,12 @@ public class Game extends Thread {
                         System.out.println("moveinfo");
                         currentPlayer.sendInfo("ok");
                         System.out.println("moveok");
-                        addMoveToDatabase(gameId, Integer.parseInt(move[1]), Integer.parseInt(move[2]));
+                        //addMoveToDatabase(gameId, Integer.parseInt(move[1]), Integer.parseInt(move[2]));
                         previousTurnPass = false;
                         sendMessageToPlayers(boardToString(), out1, out2);
                         changeCurrentPlayer();
                     }else{
                         currentPlayer.sendInfo("Incorrect move");
-                        sendMessageToPlayers(boardToString(), out1, out2);
                     }
                 } else if (move[0].equals("l")) {
 
@@ -100,9 +100,7 @@ public class Game extends Thread {
                     }
                     sendMessageToPlayers(info, out1, out2);
                 }
-
-
-            } while (!gameIsOver);
+            }
 
 
 
@@ -146,6 +144,7 @@ public class Game extends Thread {
         out2.println(message);
     }
     private void changeCurrentPlayer(){
+        board.updateTurn();
         if(currentPlayer == PlayerB){
             currentPlayer = PlayerW;
             otherPlayer = PlayerB;

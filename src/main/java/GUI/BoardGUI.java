@@ -3,6 +3,7 @@ package GUI;
 import Board.Player;
 import Board.StoneColor;
 import GUI.StoneGUI.StoneGUI;
+import javafx.application.Platform;
 import javafx.scene.Group;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -13,25 +14,12 @@ public class BoardGUI {
     private final int cellSize;
     private static Player player;
     private GameGUI gameGui;
-    private StoneGUI move;
 
     public BoardGUI(int size, int cellSize, StoneColor color, Player player, GameGUI gameGUI) {
         this.board = new StoneGUI[size][size];
         this.cellSize = cellSize;
         this.player = player;
         this.gameGui = gameGUI;
-    }
-
-    public static void setCurrentPlayer(int i) {
-        //currentPlayer = i;
-    }
-
-    public boolean isEmpty(int x, int y) {
-        if(!board[x][y].isVisible()) {
-            return true;
-        } else {
-            return false;
-        }
     }
 
 
@@ -61,34 +49,21 @@ public class BoardGUI {
                 double y = j * cellSize + cellSize / 2.0;
                 StoneGUI stone = new StoneGUI(StoneColor.BLACK, x, y, radius, i, j);
                 stone.setOnMouseClicked(e -> {
-                    System.out.println(player.isYourTurn());
                     if(player.isYourTurn()){
                         player.sendMove(stone.getX(), stone.getY());
-                        System.out.println("chuj1");
                         String answer = player.getMessageFromServer();
-                        System.out.println("chuj2");
-                        System.out.println(answer);
-                        System.out.println("chuj3");
-                        System.out.println(stone.getFill());
-                        System.out.println("chuj4");
+                        //System.out.println(answer);
                         if(answer.equals("ok")){
                             String board = player.getMessageFromServer();
-                            System.out.println("chuj5");
-                            System.out.println(board);
-                            System.out.println("chuj6");
-                            updateBoard(board);
-                            System.out.println("chuj7");
+                            //System.out.println(board);
                             player.setYourTurn(false);
-                            System.out.println("chuj8");
-                            Receiver receiver = new Receiver(player, this);
-                            System.out.println("chuj9");
+                            updateBoard(board);
+                            Receiver receiver = new Receiver(player, this, gameGui);
                             Thread t = new Thread(receiver);
-                            System.out.println("chuj10");
                             t.start();
-                            System.out.println("chuj11");
                         }
                         else{
-                            System.out.println("chuj");
+                            gameGui.updateLabel(answer);
                         }
                     }
 
@@ -98,18 +73,6 @@ public class BoardGUI {
             }
         }
         return group;
-    }
-
-    /*public void placeStone(int x, int y) {
-        if(board[x][y].getColor() != Color.TRANSPARENT) {
-            board[x][y].changeState(player.getStoneColor());
-        }
-    }*/
-    public StoneGUI getStone(){
-        return move;
-    }
-    public void setStone(StoneGUI stone){
-        move = stone;
     }
 
 
@@ -124,10 +87,7 @@ public class BoardGUI {
             for (int y = 0; y < gameGui.getBoardSize(); y++) {
                 switch (boardstr.charAt(index)) {
                     case 'B':
-                        System.out.println(x+ " " + y);
                         board[x][y].setFill(Color.BLACK);
-                        //board[x][y].
-                        System.out.println(board[x][y].getFill());
                         break;
                     case 'W':
                         board[x][y].setFill(Color.WHITE);
@@ -141,4 +101,6 @@ public class BoardGUI {
             }
         }
     }
+
+
 }
