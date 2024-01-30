@@ -32,7 +32,7 @@ public class PlayerToGameAdapter {
                         socket9 = socket;
                         out9 = out;
                         out.println("Oczekiwanie na drugiego gracza");
-                        saveToDatabase();
+                        //saveToDatabase();
                     }else{
                         sendMessageGameStarts(out, out9, 9);
                         new Game(socket9, socket, 9).start();
@@ -44,7 +44,7 @@ public class PlayerToGameAdapter {
                         socket13 = socket;
                         out13 = out;
                         out.println("Oczekiwanie na drugiego gracza");
-                        saveToDatabase();
+                        //saveToDatabase();
                     }else{
                         sendMessageGameStarts(out, out13, 13);
                         new Game(socket13, socket, 13).start();
@@ -56,7 +56,7 @@ public class PlayerToGameAdapter {
                         socket19 = socket;
                         out19 = out;
                         out.println("Oczekiwanie na drugiego gracza");
-                        saveToDatabase();
+                        //saveToDatabase();
                     }else{
                         new Game(socket19, socket, 19).start();
                         sendMessageGameStarts(out, out19, 19);
@@ -64,7 +64,7 @@ public class PlayerToGameAdapter {
                     }
                     break;
             }
-        }catch (IOException | InterruptedException ex) {
+        }catch (IOException ex) {// | InterruptedException
             System.out.println("Server.Server exception: " + ex.getMessage());
             ex.printStackTrace();
         }

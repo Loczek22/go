@@ -11,10 +11,18 @@ public class Board {
     public SingleStone[][] getStones() {
         return stones;
     }
+    private int blackscore = 0, whitescore = 0;
 
     public final SingleStone[][] stones;
     private final KoPlace koPlacement = new KoPlace();
-    public static StoneColor turn = StoneColor.BLACK;;
+    public static StoneColor turn = StoneColor.BLACK;
+    public void updateTurn(){
+        if(turn == StoneColor.BLACK){
+            turn = StoneColor.WHITE;
+        }else{
+            turn = StoneColor.BLACK;
+        }
+    }
 
     public Board(int boardSize) {
         this.boardSize = boardSize;
@@ -74,11 +82,17 @@ public class Board {
             if(isValidCoordinate(x, y) && !isEmpty(x, y)){
                 StonesGroup group = stones[x][y].getGroup();
                 StoneColor color = stones[x][y].getColor();
+                System.out.println(group.getBreaths()+turn.getSymbol());
                 if(group.getBreaths() == 1 && color != turn){
                     if(checkKo(stone.getX(), stone.getY(), x, y)){
                         koPlacement.setKo(x, y);
                     }
                     System.out.println("removing "+ x+" "+y+" group");
+                    if(turn == StoneColor.BLACK){
+                        blackscore += group.getStones().size();
+                    }else{
+                        whitescore += group.getStones().size();
+                    }
                     removeGroup(group);
                 } else if (color == turn && group != newGroup) {
                     System.out.println("merging" + x+" "+y+" group into "+stone.getX()+" "+stone.getY());
@@ -119,6 +133,7 @@ public class Board {
     public boolean placeStone(SingleStone stone) {
         int x = stone.getX();
         int y = stone.getY();
+        System.out.println(x+" "+y);
 
         if (isEmpty(x, y) && !willDie(x, y) && !isKoHere(x, y)) {
             stones[x][y] = stone;
@@ -135,7 +150,7 @@ public class Board {
     }
 
 
-    public boolean willDie(int x, int y){
+    private boolean willDie(int x, int y){
         return checkBreathsForNewStone(x, y) == 0 && !willKill(x, y);
     }
 
@@ -153,7 +168,7 @@ public class Board {
 
 
 
-    public int checkBreathsForNewStone(int x, int y) {
+    private int checkBreathsForNewStone(int x, int y) {
         int breaths = 0;
         int[][] fields = {{0,-1},{0,1},{-1,0},{1,0}};
         List<StonesGroup> groups = new ArrayList<>();
@@ -178,7 +193,7 @@ public class Board {
         return x >= 0 && x < boardSize && y >= 0 && y < boardSize;
     }
 
-    public boolean isKoHere(int x, int y) {
+    private boolean isKoHere(int x, int y) {
         if(koPlacement.getX() == x && koPlacement.getY() == y && koPlacement.getIsKo()){
             return true;
         }
@@ -189,7 +204,6 @@ public class Board {
         return isValidCoordinate(x, y) && stones[x][y] == null;
     }
     public void printBoard(){
-        if(stones[1][1] != null){System.out.println(stones[1][1].getGroup().getBreaths());}
         System.out.println("   0 1 2 3 4 5 6 7 8");
         for(int i = 0; i<9;i++){
             String row = "";
@@ -197,7 +211,7 @@ public class Board {
                 if(stones[i][j] == null){
                     row += "0 ";
                 }else {
-                    row += String.valueOf(stones[i][j].getColor().getSymbol()) + " ";
+                    row += stones[i][j].getColor().getSymbol() + " ";
                 }
             }
             System.out.println(i+"  "+ row);
@@ -206,69 +220,13 @@ public class Board {
 
     public String endGame() {
 
-        if(countPoints(StoneColor.BLACK) > countPoints(StoneColor.WHITE)){
-            return "BLACK WINS";
-        } else if (countPoints(StoneColor.BLACK) < countPoints(StoneColor.WHITE)) {
-            return "WHITE WINS";
+        if(blackscore > whitescore){
+            return whitescore+" "+blackscore+" "+"b";
+        } else if (whitescore > blackscore) {
+            return whitescore+" "+blackscore+" "+"w";
         }else{
-            return "DRAW";
+            return whitescore+" "+blackscore+" "+"d";
         }
-
-    }
-    private int countPoints(StoneColor color){
-        int points = 0;
-        List<List<int[]>> checkedTerritories = new ArrayList<>();
-        for(int x = 0; x < boardSize; x++){
-            for(int y = 0; y < boardSize; y++){
-                if(isEmpty(x, y)){
-                    List<int[]> group = createTerritoryGroup(x, y, new ArrayList<>());
-                    if(checkTerritory(color, group)){
-                        points += countPointsOfGroup(group);
-                    }
-                }
-            }
-        }
-        return points;
-    }
-
-    public int countPointsOfGroup(List<int[]> group){
-        return group.size();
-    }
-    public boolean checkTerritory(StoneColor color, List<int[]> group){
-        for(int[] field : group){
-            int[][] fields = {{0,-1},{0,1},{-1,0},{1,0}};
-            for(int[] dir : fields){
-                int x = field[0] + dir[0];
-                int y = field[1] + dir[1];
-                if(isEmpty(x, y) || (isValidCoordinate(x, y) && stones[x][y].getColor() != color)){
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-    public List<int[]> createTerritoryGroup(int x, int y, List<int[]> group){
-        if (!group.contains(new int[]{x, y})) {
-            group.add(new int[]{x, y});
-        }
-        if(isEmpty(x,y-1) && !group.contains(new int[]{x, y-1})){
-            group.add(new int[]{x, y-1});
-            createTerritoryGroup(x, y-1, group);
-        }
-        if(isEmpty(x,y+1) && !group.contains(new int[]{x,y+1})){
-            group.add(new int[]{x,y+1});
-            createTerritoryGroup(x, y+1, group);
-        }if(isEmpty(x-1,y) && !group.contains(new int[]{x-1,y})){
-            group.add(new int[]{x-1,y});
-            createTerritoryGroup(x-1,y, group);
-        }
-        if(isEmpty(x+1,y) && !group.contains(new int[]{x+1,y})){
-            group.add(new int[]{x+1,y});
-            createTerritoryGroup(x+1,y, group);
-        }
-        return group;
-
     }
 
 }
