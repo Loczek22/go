@@ -1,10 +1,14 @@
 package Server;
 
 import Board.*;
+import Database.*;
+import javafx.scene.paint.Color;
 
 import java.io.*;
 import java.net.*;
 import java.util.Arrays;
+
+
 
 
 public class Game extends Thread {
@@ -16,12 +20,16 @@ public class Game extends Thread {
     private ServerPlayer currentPlayer;
     private ServerPlayer otherPlayer;
     private int boardSize;
+    private static int gameId;
 
     public Game(Socket socket1, Socket socket2, int boardSize) {
         this.socket1 = socket1;
         this.socket2 = socket2;
         this.board = new Board(boardSize);
         this.boardSize = boardSize;
+
+        DbSaveGame dbSaveGame = new DbSaveGame();
+        gameId = dbSaveGame.getIDGame();
     }
 
     public void run() {
@@ -56,6 +64,7 @@ public class Game extends Thread {
                 String[] move = currentPlayer.receiveInfo().split(" ");
                 System.out.println("chuj2");
                 if(move[0].equals("p")){
+                    passMoveToDatabase(gameId, Integer.parseInt(move[1]), Integer.parseInt(move[2]));
                     if(previousTurnPass){
                         String info = board.endGame();
                         sendMessageToPlayers(info, out1, out2);
@@ -72,6 +81,7 @@ public class Game extends Thread {
                         System.out.println("moveinfo");
                         currentPlayer.sendInfo("ok");
                         System.out.println("moveok");
+                        addMoveToDatabase(gameId, Integer.parseInt(move[1]), Integer.parseInt(move[2]));
                         previousTurnPass = false;
                         sendMessageToPlayers(boardToString(), out1, out2);
                         changeCurrentPlayer();
@@ -104,6 +114,33 @@ public class Game extends Thread {
         }
     }
 
+   public void addMoveToDatabase(int gameId, int x, int y) {
+        DbSaveGame dbSaveGame = new DbSaveGame();
+        Color playerColor = currentPlayer.getStoneColor() == StoneColor.BLACK ? Color.BLACK : Color.WHITE;
+        Move move = new Move.Builder(gameId, dbSaveGame.getMoveId(gameId))
+                .x(x)
+                .y(y)
+                .color((playerColor == Color.BLACK) ? "BLACK" : "WHITE")
+                .moveType("add")
+                .build();
+
+        AddMoveHandle addMoveHandle = new AddMoveHandle(dbSaveGame);
+        addMoveHandle.handle(move);
+    }
+
+    public void passMoveToDatabase(int gameId, int x, int y) {
+        DbSaveGame dbSaveGame = new DbSaveGame();
+        Color playerColor = currentPlayer.getStoneColor() == StoneColor.BLACK ? Color.BLACK : Color.WHITE;
+        Move move = new Move.Builder(gameId, dbSaveGame.getMoveId(gameId))
+                .x(x)
+                .y(y)
+                .color((playerColor == Color.BLACK) ? "BLACK" : "WHITE")
+                .moveType("pass")
+                .build();
+
+        AddMoveHandle addMoveHandle = new AddMoveHandle(dbSaveGame);
+        addMoveHandle.handle(move);
+    }
     private void sendMessageToPlayers(String message, PrintWriter out1, PrintWriter out2){
         out1.println(message);
         out2.println(message);

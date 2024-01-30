@@ -1,5 +1,8 @@
 package Database;
 
+import GUI.BoardGUI;
+import GUI.BoardSizeSelector;
+
 import java.sql.Connection;
 import java.io.IOException;
 import java.sql.*;
@@ -7,7 +10,7 @@ import java.sql.*;
 public class DbAddGame {
     Connection conn = null;
     private static final String NEXT_ID = "SELECT COALESCE(MAX(game_id), 0) FROM boards;";
-    private static final String INSERT_GAMEID = "INSERT INTO boards (game_id) VALUES (?);";
+    private static final String INSERT_GAME = "INSERT INTO boards (game_id) VALUES (?);";
     public int getIdGame() {
         int Id = 0;
         try {
@@ -32,7 +35,7 @@ public class DbAddGame {
         try {
             conn = JDBConnector.getConnection();
 
-            try (PreparedStatement pstmt = conn.prepareStatement(INSERT_GAMEID)) {
+            try (PreparedStatement pstmt = conn.prepareStatement(INSERT_GAME)) {
                 pstmt.setInt(1, getIdGame());
 
                 pstmt.executeUpdate();
