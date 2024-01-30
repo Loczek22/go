@@ -1,6 +1,8 @@
 package GUI;
 
 
+import Database.DbAddGame;
+import Database.DbSaveGame;
 import Server.Client;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -31,16 +33,19 @@ public class BoardSizeSelector {
 
         size19Button.setOnAction(e -> {
             setSelectedBoardSize(9);
+            setBoardSizeToDb(9);
             waitForOpponent();
         });
 
         size13Button.setOnAction(e -> {
             setSelectedBoardSize(13);
+            setBoardSizeToDb(13);
             waitForOpponent();
         });
 
         size9Button.setOnAction(e -> {
             setSelectedBoardSize(19);
+            setBoardSizeToDb(19);
             waitForOpponent();
         });
 
@@ -91,6 +96,11 @@ public class BoardSizeSelector {
         });
 
         alert.show();
+    }
+
+    private void setBoardSizeToDb(int boardSizeToDb) {
+        DbSaveGame dbSaveGame = new DbSaveGame();
+        dbSaveGame.setBoardSize(boardSizeToDb, dbSaveGame.getIDGame());
     }
 
 
