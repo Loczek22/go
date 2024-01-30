@@ -26,8 +26,8 @@ public class StoneGUI extends Circle {
         this.setVisible(true);
         //this.color = ((color == StoneColor.BLACK) ? Color.BLACK : Color.WHITE);
         //this.setFill(Color.TRANSPARENT);
-        this.setCenterX(x+17);
-        this.setCenterY(y+17);
+        this.setCenterX(x);
+        this.setCenterY(y);
         this.setRadius(radius);
     }
 }
