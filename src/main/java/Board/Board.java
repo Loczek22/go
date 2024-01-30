@@ -95,10 +95,10 @@ public class Board {
             int newDelX = delX + dir[0];
             int newY = y + dir[1];
             int newDelY = delY + dir[1];
-            if(stones[newX][newY].getColor() != turn || (newX == newDelX && newY == newDelY)){
+            if(isValidCoordinate(newX, newY) && isKoHere(newX, newY) && stones[newX][newY].getColor() != turn || (newX == newDelX && newY == newDelY)){
                 checkNew += 1;
             }
-            if(stones[newDelX][newDelY].getColor() == turn || (newX == newDelX && newY == newDelY)){
+            if(isValidCoordinate(newDelX, newDelY) && stones[newDelX][newDelY].getColor() == turn || (newX == newDelX && newY == newDelY)){
                 checkDel += 1;
             }
         }

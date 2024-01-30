@@ -44,7 +44,7 @@ public class Client {
             if("Oczekiwanie na drugiego gracza".equals(first_message)) {
                 color = StoneColor.BLACK;
                 System.out.println(in.readLine());
-                WaitForSecondPlayer wait = new WaitForSecondPlayer();
+                //WaitForSecondPlayer wait = new WaitForSecondPlayer();
             }
             else{
                 color = StoneColor.WHITE;

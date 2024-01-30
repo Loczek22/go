@@ -52,7 +52,9 @@ public class Game extends Thread {
             otherPlayer = PlayerW;
             boolean previousTurnPass = false;
             do {
+                System.out.println("chuj");
                 String[] move = currentPlayer.receiveInfo().split(" ");
+                System.out.println("chuj2");
                 if(move[0].equals("p")){
                     if(previousTurnPass){
                         String info = board.endGame();
@@ -72,6 +74,7 @@ public class Game extends Thread {
                         System.out.println("moveok");
                         previousTurnPass = false;
                         sendMessageToPlayers(boardToString(), out1, out2);
+                        changeCurrentPlayer();
                     }else{
                         currentPlayer.sendInfo("Incorrect move");
                         sendMessageToPlayers(boardToString(), out1, out2);

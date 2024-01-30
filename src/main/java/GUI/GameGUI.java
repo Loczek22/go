@@ -45,6 +45,11 @@ public class GameGUI implements Runnable{
         Stage gameStage = new Stage();
         gameStage.setResizable(false);
         boardGUI = new BoardGUI(boardSize, 600 / boardSize, player.getStoneColor(), player, this);
+        if (!player.isYourTurn()){
+            Receiver receiver = new Receiver(player, boardGUI);
+            Thread t = new Thread(receiver);
+            t.start();
+        }
         gameStage.setTitle("GO GAME");
         Group root = new Group();
         StackPane pane = new StackPane();

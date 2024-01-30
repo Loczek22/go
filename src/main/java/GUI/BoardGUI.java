@@ -61,20 +61,31 @@ public class BoardGUI {
                 double y = j * cellSize + cellSize / 4.0;
                 StoneGUI stone = new StoneGUI(StoneColor.BLACK, x, y, radius, i, j);
                 stone.setOnMouseClicked(e -> {
-                    System.out.println(stone.getFill());
+                    System.out.println(player.isYourTurn());
                     if(player.isYourTurn()){
                         player.sendMove(stone.getX(), stone.getY());
+                        System.out.println("chuj1");
                         String answer = player.getMessageFromServer();
+                        System.out.println("chuj2");
                         System.out.println(answer);
+                        System.out.println("chuj3");
                         System.out.println(stone.getFill());
+                        System.out.println("chuj4");
                         if(answer.equals("ok")){
                             String board = player.getMessageFromServer();
+                            System.out.println("chuj5");
                             System.out.println(board);
+                            System.out.println("chuj6");
                             updateBoard(board);
+                            System.out.println("chuj7");
                             player.setYourTurn(false);
+                            System.out.println("chuj8");
                             Receiver receiver = new Receiver(player, this);
+                            System.out.println("chuj9");
                             Thread t = new Thread(receiver);
+                            System.out.println("chuj10");
                             t.start();
+                            System.out.println("chuj11");
                         }
                         else{
                             System.out.println("chuj");
